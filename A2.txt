@@ -1,0 +1,137 @@
+                   CISC/CMPE 454 Assignment 2
+
+              Due Thursday, February 28 before class 
+
+You task is to implement non-photorealistic rendering on the GPU.  You
+will add cel shading and a wide black silhouette to a rendered model.
+
+Rendering is done in three passes:
+
+ - In pass 1, the object is rendered and the colour, normal, and depth
+   is stored for each pixel.
+
+ - In pass 2, edges are detected by computing the Laplacian of the
+   depth at each pixel.
+
+ - In pass 3, the object is rendered using cel shading (i.e. quantized
+   diffuse shading) where the Laplacian is below a threshold, and
+   using a black outline otherwise.  But this would result in a black
+   outline that is too narrow so, instead, a fragment is coloured
+   black if any of the nine fragments in the 3x3 neighbourhood around
+   the fragment has a Laplacian at or above the threshold.
+
+The colour, normal, depth, and Laplacian are stored in four textures.
+Each texture has the same dimensions as the window, so there's a
+one-to-one correspondence between texels in the texture map and pixels
+in the window.
+
+You do not need to edit or compile any C++ code.  You need only to
+edit six shader files: a vertex shader and a fragment shader for each
+of the three passes.
+
+Step 0
+
+  Run the code:
+  
+    On Linux, run the code as one of
+
+      ./linux/shader data/triceratops.obj
+    or
+      ./linux/shader-caslab data/triceratops.obj
+
+    You might get a message about failing to open the drm device or
+    failing to load the nouveau driver; you can ignore those.
+
+    But, if the two commands above fail, go to the source/ directory and
+    compile the program there.  To do so, type 'make' in that directory,
+    then 'mv shader ../linux'.  You might have to change the
+    glfwWindowHint in shader.cpp (see the comments there).
+
+    On Windows, open a command window, go to the a2 directory, and type
+
+      .\windows\shader.exe data\triceratops.obj
+
+  Explanation of output:
+  
+    The program should show an empty magenta-coloured window.  Press 'd'
+    (for "debug") to see the four textures as they appear after the
+    first pass.  Press 'd' again to see the textures as they appear
+    after the second pass.  Press 'd' again to see the program output
+    (i.e. after the third pass).  The textures will be shown as
+
+      lower-left  = colour
+      upper-left  = normals with (r,g,b) = (x,y,z)
+      upper-right = depth with lighter being larger (i.e. farther away)
+      lower-right = Laplacian with lighter being larger
+
+    After the first pass, the Laplacian texture isn't updated, so it will
+    appear stationary as the other three get updated.  Whatever was last
+    in the texture will still appear there.
+
+    Using the provided skeleton shaders, the textures for colour,
+    normals, depth, and laplacian will be red, green, grey, and blue,
+    respectively.  The object will rotate in the first three textures,
+    but the Laplacian texture will initally be completely blue.  You
+    will have to edit the shaders to provide correct textures.
+
+Step 1 (Pass 1)
+
+  [2 marks] Edit shaders/pass1.vert to correctly compute the colour,
+  normal, and depth.  These are passed to the fragment shader, which
+  will store these values in the corresponding textures.  You do not
+  have to edit the fragment shader in shaders/pass1.frag.
+
+  When you run the program, press 'd' to see the three textures.
+
+Step 2 (Pass 2)
+
+  In Pass 2, *all* pixels on the screen are written to, so a fragment
+  shader will be executed to each pixel, even if it is a background
+  pixel.
+
+  [1 mark] Edit shaders/pass2.vert to compute texture coordinates from
+  vertex coordinates.
+
+  [3 marks] Edit shaders/pass2.frag to compute the Laplacian at the
+  fragment.  This will involve sampling nine values from the depth
+  texture in the 3x3 set of texels centred at the fragment's texture
+  coordinates.
+
+  When you run the program, press 'd' twice to see the Laplacian texture
+  in the lower-right corner.  Bright pixels will indicate large positive
+  values.
+
+Step 3 (Pass 3)
+
+  In Pass 3, again, all pixels are written to, so a fragment shader is
+  executed for each pixel.
+
+  Copy shaders/pass2.vert to shaders/pass3.vert.  These two vertex
+  shaders should be identical.
+
+  [5 marks] Edit shaders/pass3.frag to compute cel shading and
+  silhouettes as described in the comments in that file.
+
+  [1 mark] Modify this shader to have a silhouette that is black in
+  the middle but a blend of black and the Phong-computed colour away
+  from the silhouette middle.  Make sure that the shader is efficient
+  and does not make unnecessary texture lookups in doing this.
+
+To Hand In
+
+  [-1 mark] One mark will be deducted if these instructions are not
+  followed exactly.
+
+  Make a directory called 'a2'.  In that directory, put
+
+    - your SIX shader files
+    - a README file with your name(s), student number(s), and email address(es)
+    - one screen captured image of your program output
+
+  Create a ZIP archive of the a2 directory.
+
+  Name the archive with your student number(s):
+    STUDENTNUMBER.zip or
+    STUDENTNUMBER1_STUDENTNUMBER2.zip
+
+  Email the archive to jstewart@cs.queensu.ca.
