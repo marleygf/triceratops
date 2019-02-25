@@ -24,18 +24,11 @@ void main()
 
 {
   // calc vertex position in CCS (always required)
-
   gl_Position = MVP * vec4( vertPosition, 1.0 );
-
   // Provide a colour 
-
-  colour = vec3(1.0,0.0,0.0);         // YOUR CODE HERE
-
+  colour = 0.5 * (vertPosition + vec3(1.0,1.0,1.0));
   // calculate normal in VCS
-
-  normal = vec3(0.0,1.0,0.0);         // YOUR CODE HERE
-
+  normal = vec3(MV * vec4(vertNormal, 0.0 ));
   // Calculate the depth in [0,1]
-
-  depth = 0.5;                  // YOUR CODE HERE
+  depth = 0.5 * ((gl_Position.z / gl_Position.w) + 1.0);
 }
