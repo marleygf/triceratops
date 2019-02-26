@@ -18,5 +18,5 @@ void main()
   // coordinates are in the range [-1,1] in the window.  You have to
   // map this to the range [0,1] of texture coordinates.
 
-  texCoords = vec2( 0.0, 0.0 );     // YOUR CODE HERE (identical to pass2.vert)
+  texCoords = vec2(((gl_Position.x + 1.0) / 2.0), ((gl_Position.y + 1.0) / 2.0));     
 }
