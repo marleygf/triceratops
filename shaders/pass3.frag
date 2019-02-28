@@ -34,8 +34,7 @@ void main()
   // near the silhouette of the object.
 
   if(depth == 1.0 && laplacian > -0.1){
-    outputColour = vec4(0.5,0.5,0.5,0.5);
-    return;
+    discard;
   }
 
   // [0 marks] Look up value for the colour and normal.  Use the RGB
