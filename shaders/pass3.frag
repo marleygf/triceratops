@@ -33,7 +33,7 @@ void main()
   // [1 mark] Discard the fragment if it is a background pixel not
   // near the silhouette of the object.
 
-  if(depth == 1.0 && laplacian > -0.1){
+  if(depth == 1.0 && laplacian < 0.0){
     discard;
   }
 
@@ -91,9 +91,9 @@ void main()
   // than if we test only the fragment.
 
   mediump vec3 diffuseColour = NdotL * colour;
-  diffuseColour = diffuseColour;
   if(numEdges > 0){
-    diffuseColour = vec3(0,0,0);
+    mediump float n = pow(2.0 * float(kernelRadius) + 1.0, 2.0) - 1.0;
+    diffuseColour = diffuseColour * (1.0 - (float(numEdges)/n));
   }
   outputColour = vec4(diffuseColour, 1.0 );
 }
