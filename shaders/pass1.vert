@@ -24,11 +24,11 @@ void main()
 
 {
   // calc vertex position in CCS (always required)
-  gl_Position = MVP * vec4( vertPosition, 1.0 );
+  gl_Position = MVP * vec4(vertPosition, 1.0); //MVP transform is entire step here
   // Provide a colour 
-  colour = 0.5 * (vec3(1.0,0,1.0) + vec3(1.0,1.0,1.0));
+  colour = 0.5 * (vec3(1.0,0,1.0) + vec3(1.0,1.0,1.0)); //Purple
   // calculate normal in VCS
-  normal = vec3(MV * vec4(vertNormal, 0.0 ));
-  // Calculate the depth in [0,1]
+  normal = vec3(MV * vec4(vertNormal, 0.0)); //Similarly, MV is all that is needed here
+  // Calculate the depth in [0,1] // Shift and divide to calculate depth
   depth = 0.5 * ((gl_Position.z / gl_Position.w) + 1.0);
 }

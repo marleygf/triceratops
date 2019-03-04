@@ -33,6 +33,7 @@ void main()
   // [1 mark] Discard the fragment if it is a background pixel not
   // near the silhouette of the object.
 
+  //Depth and laplacian determine background and model proximity
   if(depth == 1.0 && laplacian < 0.0){
     discard;
   }
@@ -52,6 +53,7 @@ void main()
 
   const int numQuanta = 3;
 
+  //Multiply, round and then divide to find which quanta "bin" NdotL fits in
   mediump float NdotL = dot(normalize(normal), lightDir);
   int bin = int(round(NdotL * float(numQuanta)));
   NdotL = float(bin) * (1.0/float(numQuanta));
@@ -70,9 +72,10 @@ void main()
 
   const int kernelRadius = 1;
   int numEdges = 0;
-  for(int x = -kernelRadius; x <= kernelRadius; x++){
+  for(int x = -kernelRadius; x <= kernelRadius; x++){ // Between -x/-y and +x/+y
     for(int y = -kernelRadius; y <= kernelRadius; y++){
-      if(!(x == 0 && y == 0)){
+      if(!(x == 0 && y == 0)){ //Pixel itself should not be counted
+        //Use increments to determine coordinates
         mediump vec2 neighbourCoords = vec2(texCoords.x + (float(x) * texCoordInc.x), texCoords.y + (float(y) * texCoordInc.x));
         mediump float neighbour = texture2D(laplacianSampler, neighbourCoords).r;
         if(neighbour < -0.1){
@@ -92,6 +95,8 @@ void main()
 
   mediump vec3 diffuseColour = NdotL * colour;
   if(numEdges > 0){
+    //We could simply set diffise color to (0,0,0) her efor a pure black border
+    //As per assn instructions, we instead use the number of edges to blend and darken
     mediump float n = pow(2.0 * float(kernelRadius) + 1.0, 2.0) - 1.0;
     diffuseColour = diffuseColour * (1.0 - (float(numEdges)/n));
   }

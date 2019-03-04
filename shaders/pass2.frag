@@ -42,6 +42,7 @@ void main()
   
   //fragLaplacian = -1.0 * texture( depthSampler, texCoordOffset ) + ...
 
+  //Begin with middle pixel at "origin" and add negative weights in neighbourhood
   fragLaplacian =   8.0 * texture(depthSampler, texCoords).xyz;
   fragLaplacian += -1.0 * texture(depthSampler, vec2(texCoords.x - texCoordInc.x, texCoords.y + texCoordInc.y)).xyz; //Top Left
   fragLaplacian += -1.0 * texture(depthSampler, vec2(texCoords.x                , texCoords.y + texCoordInc.y)).xyz; //Top Centre

@@ -18,5 +18,6 @@ void main()
   // coordinates are in the range [-1,1] in the window.  You have to
   // map this to the range [0,1] of texture coordinates.
 
+  //Not much to explain here, we just add and divide to shift range
   texCoords = vec2(((gl_Position.x + 1.0) / 2.0), ((gl_Position.y + 1.0) / 2.0));     
 }
